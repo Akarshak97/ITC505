@@ -1,19 +1,25 @@
-// Listen for click event on the sort button
+// script.js
 document.getElementById("sortBtn").addEventListener("click", function() {
-  // Read the value from the input field (comma-separated numbers)
-  const input = document.getElementById("arrayInput").value;
+  const rawInput = document.getElementById("arrayInput").value;
 
-  // Parse into an array of numbers: split on commas, trim whitespace, parseInt, filter out non-numbers
-  let arr = input
+  // Convert the input string into an array of numbers
+  let arr = rawInput
     .split(",")
-    .map(s => parseInt(s.trim(), 10))
-    .filter(n => !isNaN(n));
+    .map(item => item.trim())
+    .filter(item => item !== "")
+    .map(item => Number(item))
+    .filter(num => !Number.isNaN(num));
 
-  // Sort numerically in ascending order
+  if (arr.length === 0) {
+    document.getElementById("result").textContent =
+      "Please enter valid numbers separated by commas.";
+    return;
+  }
+
+  // Sort numerically using compare function (important: default .sort() is lexicographic) :contentReference[oaicite:0]{index=0}
   arr.sort((a, b) => a - b);
 
-  // Display the sorted array in the result paragraph
+  // Display the sorted result
   document.getElementById("result").textContent =
     "Sorted Array: [" + arr.join(", ") + "]";
 });
-
