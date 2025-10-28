@@ -1,18 +1,19 @@
 document.getElementById("sortBtn").addEventListener("click", function() {
+  // Read the input string value from a text-input with id="arrayInput"
   const input = document.getElementById("arrayInput").value;
-  // parse into array of numbers
-  let arr = input.split(",").map(s => parseInt(s.trim())).filter(n => !isNaN(n));
   
-  // simple bubble‐sort (or use built-in sort)
-  for (let i = 0; i < arr.length - 1; i++) {
-    for (let j = 0; j < arr.length - i - 1; j++) {
-      if (arr[j] > arr[j + 1]) {
-        let temp = arr[j];
-        arr[j] = arr[j + 1];
-        arr[j + 1] = temp;
-      }
-    }
-  }
-
-  document.getElementById("result").textContent = "Sorted Array: [" + arr.join(", ") + "]";
+  // Split on commas, trim whitespace, parse to integers, filter out non-numbers
+  let arr = input
+    .split(",")
+    .map(s => parseInt(s.trim(), 10))
+    .filter(n => !isNaN(n));
+  
+  // Sort numerically (ascending)
+  arr.sort(function(a, b) {
+    return a - b;
+  });
+  
+  // Display the sorted result
+  document.getElementById("result").textContent =
+    "Sorted Array: [" + arr.join(", ") + "]";
 });
