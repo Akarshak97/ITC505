@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab 6 – Holy Grail Layout</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Interactive Sorting Demo</h1>
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/120px-React-icon.svg.png" alt="Logo">
+    </header>
+
+    <nav>
+      <ul>
+        <li><a href="#">Home</a></li>
+        <li><a href="#">Labs</a></li>
+        <li><a href="#">Projects</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+    </nav>
+
+    <main>
+      <h2>Bubble Sort Visualization</h2>
+      <p>Click the button below to sort the numbers.</p>
+      <div id="array">[5, 3, 8, 4, 2]</div>
+      <button id="sortBtn">Sort Numbers</button>
+      <p id="result"></p>
+    </main>
+
+    <aside>
+      <a href="https://www.amazon.com/" target="_blank">
+        <img src="https://m.media-amazon.com/images/I/61M1gB3jvUL._AC_SX679_.jpg" alt="Ad" class="ad">
+      </a>
+    </aside>
+
+    <footer>
+      <p><strong>Addendum:</strong> This page demonstrates a JavaScript bubble sort algorithm. When you click the button, it sorts an array of integers and displays the result. I used CSS Grid for layout and a simple event listener for interactivity. Debugging focused on fixing array reference errors.</p>
+      <p>Last updated: <span id="lastModified"></span></p>
+    </footer>
+  </div>
+
+  <script src="script.js"></script>
+  <script>
+    var x = document.lastModified;
+    document.getElementById('lastModified').textContent = x;
+  </script>
+</body>
+</html>
