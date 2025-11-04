@@ -1,0 +1,165 @@
+/* --- KGF: Paths of Gold (enhanced colors + background) --- */
+:root {
+  --bg0:#0a0a0a;
+  --bg1:#121212;
+  --bg2:#1a1a1a;
+  --panel:#151515;
+  --ink:#f6f7fb;
+  --muted:#b6b6b6;
+  --gold:#ffd54f;    /* bright gold */
+  --amber:#ffb300;   /* gold button top */
+  --ember:#ff6f00;   /* gold button bottom */
+  --crimson:#b71c1c; /* accent for highlights */
+  --teal:#26a69a;    /* secondary accent */
+}
+
+/* App background: layered gradient + optional texture image (drop one at assets/bg_kgf_texture.jpg) */
+html, body {
+  height: 100%;
+  margin: 0;
+  color: var(--ink);
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+  background:
+    radial-gradient(1200px 600px at 10% -10%, rgba(255, 215, 64, 0.12), transparent 50%),
+    radial-gradient(1000px 500px at 120% 20%, rgba(255, 111, 0, 0.10), transparent 55%),
+    radial-gradient(800px 400px at 50% 120%, rgba(38, 166, 154, 0.08), transparent 60%),
+    linear-gradient(180deg, var(--bg0) 0%, var(--bg1) 45%, var(--bg2) 100%),
+    url("assets/bg_kgf_texture.jpg");
+  background-size: cover, cover, cover, cover, cover;
+  background-attachment: fixed, fixed, fixed, fixed, fixed;
+  background-blend-mode: screen, screen, screen, normal, overlay;
+}
+
+/* Subtle animated shimmer on headers */
+@keyframes goldShimmer {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 100% 50%; }
+}
+
+header {
+  padding: 2rem 1rem .75rem;
+  text-align: center;
+}
+
+h1 {
+  margin: 0;
+  font-size: clamp(1.6rem, 3.2vw, 2.6rem);
+  letter-spacing: .6px;
+  line-height: 1.15;
+  background-image: linear-gradient(90deg, #fff, var(--gold), #fff, var(--gold));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  background-size: 300% 100%;
+  animation: goldShimmer 6s linear infinite;
+  text-shadow: 0 1px 0 rgba(0,0,0,.3);
+}
+
+.sub {
+  color: var(--muted);
+  margin: .35rem 0 0;
+  font-size: .98rem;
+}
+
+main { max-width: 1100px; margin: 1rem auto 2.25rem; padding: 0 1rem; }
+
+/* Card wrapper with glowing border using :before pseudo */
+.wrap {
+  position: relative;
+  border-radius: 18px;
+  overflow: hidden;
+  background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+  border: 1px solid rgba(255,255,255,.08);
+  box-shadow: 0 12px 35px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.05);
+}
+
+.wrap::before {
+  content: "";
+  position: absolute; inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(255, 179, 0, .45), rgba(183, 28, 28, .35), rgba(38, 166, 154, .35));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+}
+
+/* Two-column grid on wide screens */
+.grid { display: grid; grid-template-columns: 1fr; gap: 0; }
+@media (min-width: 920px) { .grid { grid-template-columns: 1.2fr .8fr; } }
+
+.story {
+  padding: 1.25rem 1.25rem .25rem;
+  min-height: 280px;
+}
+
+#image {
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 16/10;
+  object-fit: cover;
+  display: block;
+  background: #0b0b0b;
+  border-top: 1px solid rgba(255,255,255,.08);
+  filter: saturate(1.05) contrast(1.02);
+}
+
+/* Choices */
+.choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .7rem;
+  padding: 1rem 1.25rem 1.25rem;
+  border-top: 1px solid rgba(255,255,255,.08);
+}
+
+button.choice {
+  appearance: none;
+  border: none;
+  border-radius: 12px;
+  padding: .85rem 1.05rem;
+  font-weight: 800;
+  letter-spacing: .2px;
+  background: linear-gradient(180deg, var(--amber), var(--ember));
+  color: #111;
+  cursor: pointer;
+  box-shadow: 0 8px 22px rgba(255, 179, 0, .28);
+  transition: transform .06s ease, box-shadow .2s ease, filter .2s ease;
+}
+
+button.choice:hover { transform: translateY(-1px); filter: brightness(1.05); }
+button.choice:active { transform: translateY(0); }
+button.choice:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 3px rgba(255, 179, 0, .45);
+  border-radius: 14px;
+}
+
+/* HUD */
+.hud {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: .8rem 1rem; border-top: 1px solid rgba(255,255,255,.08);
+  background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.025));
+  font-size: .92rem; color: var(--muted);
+}
+
+.restart {
+  color: var(--ink); font-weight: 700; cursor: pointer; border: none; background: none;
+  padding: .45rem .75rem; border-radius: 9px;
+}
+.restart:hover { background: rgba(255,255,255,.07); }
+
+/* Footer */
+.footer {
+  padding: 1rem;
+  color: var(--muted);
+}
+
+/* Links */
+a.link { color: var(--teal); text-decoration: none; }
+a.link:hover { text-decoration: underline; }
+
+/* Optional callout style (if you add any <mark> in text) */
+mark { background: linear-gradient(90deg, rgba(255, 215, 64, .25), rgba(255, 255, 255, .15)); color: var(--ink); padding: .05rem .25rem; border-radius: 4px; }
