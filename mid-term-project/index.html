@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KGF: Paths of Gold — Choose Your Own Adventure</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>KGF: Paths of Gold</h1>
+    <p class="sub">A single-page HTML/CSS/JS adventure set around the Kolar Gold Fields. 8+ unique endings, each with an image.</p>
+  </header>
+
+  <main>
+    <section class="wrap">
+      <div class="grid">
+        <div class="left">
+          <div id="story" class="story" aria-live="polite"></div>
+          <div id="choices" class="choices" aria-label="Choices"></div>
+          <div class="hud">
+            <div id="status" aria-live="polite">Stage: —</div>
+            <button id="restartBtn" class="restart" title="Restart the story">↺ Restart</button>
+          </div>
+        </div>
+        <div class="right">
+          <img id="image" alt="Current scene image">
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="wrap footer">
+    <p>Last updated: <span id="lastModified"></span></p>
+    <p>Repo path: <code>/ITC505/mid-term-project/index.html</code> • Author: <span id="authorName">Your Name</span></p>
+  </footer>
+
+  <!-- Required footer script from assignment -->
+  <script type="text/javascript">
+    var x = document.lastModified;
+    document.getElementById('lastModified').textContent = x;
+  </script>
+
+  <script src="script.js"></script>
+</body>
+</html>
