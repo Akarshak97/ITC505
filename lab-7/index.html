@@ -1,60 +1,172 @@
+// server.js
+const express = require('express')
+const logger = require('morgan')
+const path = require('path')
+
+const server = express()
+
+// Middleware
+server.use(express.urlencoded({ extended: true }))
+server.use(logger('dev'))
+
+// Serve static files from /public
+const publicServedFilesPath = path.join(__dirname, 'public')
+server.use(express.static(publicServedFilesPath))
+
+// Helper function to render the Mad Lib page
+function renderMadLibPage(values = {}, madLibText = '', errorMsg = '') {
+  const {
+    name = '',
+    adjective = '',
+    noun = '',
+    place = '',
+    animal = '',
+    verb = ''
+  } = values
+
+  // Simple function to escape HTML (so quotes don't break attributes)
+  const esc = (str) =>
+    String(str || '').replace(/&/g, '&amp;')
+                     .replace(/</g, '&lt;')
+                     .replace(/>/g, '&gt;')
+                     .replace(/"/g, '&quot;')
+                     .replace(/'/g, '&#39;')
+
+  return `
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lab 7 – Mad Lib</title>
-  <link rel="stylesheet" href="style.css">
+  <title>Lab 7 - Mad Lib</title>
+  <link rel="stylesheet" href="/ITC505/lab-7/style.css">
 </head>
 <body>
-  <h1>Fun Mad Lib Generator</h1>
-  <form id="madLibForm" action="/submitMadLib" method="POST">
-    <label>Name: <input type="text" name="name" required></label><br>
-    <label>Adjective: <input type="text" name="adjective" required></label><br>
-    <label>Place: <input type="text" name="place" required></label><br>
-    <label>Animal: <input type="text" name="animal" required></label><br>
-    <label>Verb: <input type="text" name="verb" required></label><br>
-    <button type="submit">Go Mad!</button>
-  </form>
+  <header>
+    <h1>Lab 7: Mad Lib Form</h1>
+    <p>Fill in the blanks to generate your custom story!</p>
+  </header>
 
-  <div id="result" style="margin-top:20px;"></div>
+  <main>
+    <section class="form-section">
+      <h2>Mad Lib Form</h2>
+
+      ${errorMsg ? `<p class="error">${esc(errorMsg)}</p>` : ''}
+
+      <form action="/ITC505/lab-7/index.html" method="POST">
+        <div class="form-group">
+          <label for="name">Name (person's name):</label>
+          <input type="text" id="name" name="name" value="${esc(name)}" required>
+        </div>
+
+        <div class="form-group">
+          <label for="adjective">Adjective:</label>
+          <input type="text" id="adjective" name="adjective" value="${esc(adjective)}" required>
+        </div>
+
+        <div class="form-group">
+          <label for="noun">Noun (object):</label>
+          <input type="text" id="noun" name="noun" value="${esc(noun)}" required>
+        </div>
+
+        <div class="form-group">
+          <label for="place">Place:</label>
+          <input type="text" id="place" name="place" value="${esc(place)}" required>
+        </div>
+
+        <div class="form-group">
+          <label for="animal">Plural Noun (animals, things, etc.):</label>
+          <input type="text" id="animal" name="animal" value="${esc(animal)}" required>
+        </div>
+
+        <div class="form-group">
+          <label for="verb">Verb (action word):</label>
+          <input type="text" id="verb" name="verb" value="${esc(verb)}" required>
+        </div>
+
+        <button type="submit">Go Mad!</button>
+      </form>
+    </section>
+
+    ${
+      madLibText
+        ? `
+    <section class="result-section">
+      <h2>Your Mad Lib Story</h2>
+      <p>${madLibText}</p>
+    </section>
+    `
+        : ''
+    }
+
+    <section class="addendum">
+      <h2>Addendum</h2>
+      <p>
+        For this lab, I used an ExpressJS back-end to dynamically construct the
+        Mad Lib page. The form uses the POST method and submits to the same URL
+        it is served from (<code>/ITC505/lab-7/index.html</code>). The server
+        reads the form fields from <code>req.body</code>, builds a custom story
+        using string interpolation, and then sends back a complete HTML page
+        with the generated Mad Lib displayed below the form. This approach
+        demonstrates back-end JavaScript templating and supports quick
+        iteration during development.
+      </p>
+    </section>
+  </main>
 
   <footer>
     <p>Last updated: <span id="lastModified"></span></p>
-    <section id="addendum">
-      <h4>Addendum</h4>
-      <p>This form and process were developed as part of Lab 7 for ITC505. The user interface uses AJAX to submit the form and display the story below the input fields, in order to improve user experience and avoid full page reloads. All required form fields must be filled. Errors will be displayed in red if submission fails.</p>
-    </section>
   </footer>
 
-  <script>
-    document.getElementById('lastModified').textContent = document.lastModified;
-
-    const form = document.getElementById('madLibForm');
-    const resultDiv = document.getElementById('result');
-
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const formData = new FormData(form);
-      const data = Object.fromEntries(formData.entries());
-
-      try {
-        const response = await fetch(form.action, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data)
-        });
-        const result = await response.json();
-        if (result.error) {
-          resultDiv.innerHTML = `<p style="color:red;">${result.error}</p>`;
-        } else {
-          resultDiv.innerHTML = `<h2>Your Mad Lib Story</h2><p>${result.story}</p>`;
-        }
-      } catch (err) {
-        resultDiv.innerHTML = `<p style="color:red;">An error occurred. Please try again.</p>`;
-        console.error(err);
-      }
-    });
+  <script type="text/javascript">
+    var x = document.lastModified;
+    document.getElementById('lastModified').textContent = x;
   </script>
 </body>
 </html>
+`
+}
+
+// Route from starter code (keep it!)
+server.get('/do_a_random', (req, res) => {
+  res.send(`Your number is: ${Math.floor(Math.random() * 100) + 1}`)
+})
+
+// Lab 7 routes
+
+// GET: show the form page
+server.get('/ITC505/lab-7/index.html', (req, res) => {
+  res.send(renderMadLibPage())
+})
+
+// Optional: allow /ITC505/lab-7 without index.html
+server.get('/ITC505/lab-7', (req, res) => {
+  res.redirect('/ITC505/lab-7/index.html')
+})
+
+// POST: handle the form submission and show the Mad Lib on the same page
+server.post('/ITC505/lab-7/index.html', (req, res) => {
+  const { name, adjective, noun, place, animal, verb } = req.body
+
+  // Basic validation
+  if (!name || !adjective || !noun || !place || !animal || !verb) {
+    const errorMsg = 'Please fill out ALL fields before submitting your Mad Lib.'
+    res.send(renderMadLibPage(req.body, '', errorMsg))
+    return
+  }
+
+  const madLibStory = `
+    One ${adjective} morning, ${name} grabbed a ${noun} and rushed to ${place}.
+    On the way, ${name} saw a group of ${animal} trying to ${verb} in the middle of the road!
+    Everyone stopped and laughed because it was the most ${adjective} thing they had ever seen.
+  `
+
+  res.send(renderMadLibPage(req.body, madLibStory.trim()))
+})
+
+// Port logic from assignment
+let port = 80
+if (process.argv[2] === 'local') {
+  port = 8080
+}
+
+server.listen(port, () => console.log('Ready on localhost!'))
