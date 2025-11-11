@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lab 7 – Mad Lib</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <h1>Fun Mad Lib Generator</h1>
+  <form id="madLibForm" action="/ITC505/lab-7/index.html" method="POST">
+    <label>Name: <input type="text" name="name" required></label><br>
+    <label>Adjective: <input type="text" name="adjective" required></label><br>
+    <label>Place: <input type="text" name="place" required></label><br>
+    <label>Animal: <input type="text" name="animal" required></label><br>
+    <label>Verb: <input type="text" name="verb" required></label><br>
+    <button type="submit">Go Mad!</button>
+  </form>
+
+  <div id="result" style="margin-top:20px;"></div>
+
+  <footer>
+    <p>Last updated: <span id="lastModified"></span></p>
+    <section id="addendum">
+      <h4>Addendum</h4>
+      <p>This form and process were developed as part of Lab 7 for ITC505. The user interface uses AJAX to submit the form and display the story below the input fields, in order to improve user experience and avoid full page reloads. All required form fields must be filled. Errors will be displayed in red if submission fails.</p>
+    </section>
+  </footer>
+
+  <script>
+    document.getElementById('lastModified').textContent = document.lastModified;
+
+    const form = document.getElementById('madLibForm');
+    const resultDiv = document.getElementById('result');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData(form);
+      const data = Object.fromEntries(formData.entries());
+
+      try {
+        const response = await fetch(form.action, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        const result = await response.json();
+        if (result.error) {
+          resultDiv.innerHTML = `<p style="color:red;">${result.error}</p>`;
+        } else {
+          resultDiv.innerHTML = `<h2>Your Mad Lib Story</h2><p>${result.story}</p>`;
+        }
+      } catch (err) {
+        resultDiv.innerHTML = `<p style="color:red;">An error occurred. Please try again.</p>`;
+      }
+    });
+  </script>
+</body>
+</html>
