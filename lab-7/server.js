@@ -8,11 +8,11 @@ const server = express()
 server.use(express.urlencoded({ extended: true }))
 server.use(logger('dev'))
 
-// Serve your static files (including ITC505/lab-7/index.html)
+// Serve other static stuff (labs 1–6, images, etc.)
 const publicServedFilesPath = path.join(__dirname, 'public')
 server.use(express.static(publicServedFilesPath))
 
-// Helper to render the page HTML with optional values + story
+// Helper to render HTML (form + optional story)
 function renderMadLibPage(values = {}, madLibText = '', errorMsg = '') {
   const {
     name = '',
@@ -149,7 +149,8 @@ function renderMadLibPage(values = {}, madLibText = '', errorMsg = '') {
 
       ${errorMsg ? `<p class="error">${esc(errorMsg)}</p>` : ''}
 
-      <form action="/ITC505/lab-7/index.html" method="POST">
+      <!-- IMPORTANT: no action attribute -> POST goes to SAME URL -->
+      <form method="POST">
         <div class="form-group">
           <label for="name">Name (person's name):</label>
           <input type="text" id="name" name="name" value="${esc(name)}" required>
@@ -223,23 +224,18 @@ function renderMadLibPage(values = {}, madLibText = '', errorMsg = '') {
 `
 }
 
-// starter random route (keep it)
+// Starter random route (keep for the assignment)
 server.get('/do_a_random', (req, res) => {
   res.send(`Your number is: ${Math.floor(Math.random() * 100) + 1}`)
 })
 
-// GET – show the page with empty form (no story yet)
-server.get('/ITC505/lab-7/index.html', (req, res) => {
+// One handler for GET
+function handleMadLibGet(req, res) {
   res.send(renderMadLibPage())
-})
+}
 
-// Optional: /ITC505/lab-7 → redirect to /ITC505/lab-7/index.html
-server.get('/ITC505/lab-7', (req, res) => {
-  res.redirect('/ITC505/lab-7/index.html')
-})
-
-// POST – handle form, then show SAME PAGE with story under the form
-server.post('/ITC505/lab-7/index.html', (req, res) => {
+// One handler for POST
+function handleMadLibPost(req, res) {
   const { name, adjective, noun, place, animal, verb } = req.body
 
   if (!name || !adjective || !noun || !place || !animal || !verb) {
@@ -254,9 +250,15 @@ server.post('/ITC505/lab-7/index.html', (req, res) => {
     Everyone stopped and laughed because it was the most ${adjective} thing they had ever seen.
   `.trim()
 
-  // 🔥 SAME URL, same layout, story appears below the form
+  // SAME PAGE, SAME URL, story appears under the form
   res.send(renderMadLibPage(req.body, madLibStory))
-})
+}
+
+// Support both /ITC505/lab-7 and /ITC505/lab-7/index.html
+server.get('/ITC505/lab-7', handleMadLibGet)
+server.get('/ITC505/lab-7/index.html', handleMadLibGet)
+server.post('/ITC505/lab-7', handleMadLibPost)
+server.post('/ITC505/lab-7/index.html', handleMadLibPost)
 
 // Port logic from assignment
 let port = 80
