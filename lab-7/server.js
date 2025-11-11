@@ -2,18 +2,17 @@
 const express = require('express')
 const logger = require('morgan')
 const path = require('path')
-const fs = require('fs')
 
 const server = express()
 
 server.use(express.urlencoded({ extended: true }))
 server.use(logger('dev'))
 
-// Serve other static files (lab 1–6, etc.) from /public if you use that
+// Serve your static files (including ITC505/lab-7/index.html)
 const publicServedFilesPath = path.join(__dirname, 'public')
 server.use(express.static(publicServedFilesPath))
 
-// Helper to render the page with inline CSS and optional story
+// Helper to render the page HTML with optional values + story
 function renderMadLibPage(values = {}, madLibText = '', errorMsg = '') {
   const {
     name = '',
@@ -224,28 +223,28 @@ function renderMadLibPage(values = {}, madLibText = '', errorMsg = '') {
 `
 }
 
-// KEEP the random route from starter code
+// starter random route (keep it)
 server.get('/do_a_random', (req, res) => {
   res.send(`Your number is: ${Math.floor(Math.random() * 100) + 1}`)
 })
 
-// Lab 7 GET – show the empty form page
+// GET – show the page with empty form (no story yet)
 server.get('/ITC505/lab-7/index.html', (req, res) => {
   res.send(renderMadLibPage())
 })
 
-// Optional: redirect /ITC505/lab-7 -> /ITC505/lab-7/index.html
+// Optional: /ITC505/lab-7 → redirect to /ITC505/lab-7/index.html
 server.get('/ITC505/lab-7', (req, res) => {
   res.redirect('/ITC505/lab-7/index.html')
 })
 
-// Lab 7 POST – handle submission and show story on same URL
+// POST – handle form, then show SAME PAGE with story under the form
 server.post('/ITC505/lab-7/index.html', (req, res) => {
   const { name, adjective, noun, place, animal, verb } = req.body
 
   if (!name || !adjective || !noun || !place || !animal || !verb) {
-    const errorMsg = 'Please fill out ALL fields before submitting your Mad Lib.'
-    res.send(renderMadLibPage(req.body, '', errorMsg))
+    const msg = 'Please fill out ALL fields before submitting your Mad Lib.'
+    res.send(renderMadLibPage(req.body, '', msg))
     return
   }
 
@@ -255,10 +254,11 @@ server.post('/ITC505/lab-7/index.html', (req, res) => {
     Everyone stopped and laughed because it was the most ${adjective} thing they had ever seen.
   `.trim()
 
+  // 🔥 SAME URL, same layout, story appears below the form
   res.send(renderMadLibPage(req.body, madLibStory))
 })
 
-// Port logic from starter
+// Port logic from assignment
 let port = 80
 if (process.argv[2] === 'local') {
   port = 8080
