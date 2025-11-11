@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Lab 7 – Mad Lib</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <h1>Fun Mad Lib Generator</h1>
-  <form id="madLibForm" action="/ITC505/lab-7/index.html" method="POST">
+  <form id="madLibForm" action="/submitMadLib" method="POST">
     <label>Name: <input type="text" name="name" required></label><br>
     <label>Adjective: <input type="text" name="adjective" required></label><br>
     <label>Place: <input type="text" name="place" required></label><br>
@@ -52,6 +52,7 @@
         }
       } catch (err) {
         resultDiv.innerHTML = `<p style="color:red;">An error occurred. Please try again.</p>`;
+        console.error(err);
       }
     });
   </script>
