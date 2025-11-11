@@ -102,6 +102,10 @@
       font-size: 0.85rem;
       color: #555;
     }
+
+    #storyResult {
+      margin-top: 15px;
+    }
   </style>
 </head>
 <body>
@@ -114,13 +118,10 @@
     <section class="form-section">
       <h2>Mad Lib Form</h2>
 
-      <!--
-        NOTE: On initial load, there is no error.
-        When handled by Express (server.js), error/message/story will
-        be injected server-side.
-      -->
+      <p id="errorMessage" class="error" style="display:none;"></p>
 
-      <form action="/ITC505/lab-7/index.html" method="POST">
+      <!-- No action attribute: JS will handle everything -->
+      <form id="madLibForm">
         <div class="form-group">
           <label for="name">Name (person's name):</label>
           <input type="text" id="name" name="name" required>
@@ -153,24 +154,23 @@
 
         <button type="submit">Go Mad!</button>
       </form>
-    </section>
 
-    <!--
-      After POST, the server responds with the same layout but
-      includes a <section class="result-section"> with the Mad Lib story.
-    -->
+      <!-- 🔻 STORY APPEARS HERE, BELOW THE BUTTON -->
+      <div id="storyResult" class="result-section" style="display:none;">
+        <h2>Your Mad Lib Story</h2>
+        <p id="storyText"></p>
+      </div>
+    </section>
 
     <section class="addendum">
       <h2>Addendum</h2>
       <p>
-        For this lab, I used an ExpressJS back-end to dynamically construct the
-        Mad Lib page. The form submits using the POST method to the same URL
-        it is served from (<code>/ITC505/lab-7/index.html</code>). The server reads
-        the form fields from <code>req.body</code>, builds a custom story using
-        string interpolation, and then sends back a complete HTML page with
-        the generated Mad Lib displayed below the form. This demonstrates
-        back-end JavaScript for dynamic page generation while keeping the URL
-        consistent for both GET and POST requests.
+        This page uses front-end JavaScript to dynamically generate a Mad Lib
+        story. When the user clicks the "Go Mad!" button, the form submission
+        is intercepted with JavaScript, the input values are read, and a story
+        is constructed and displayed directly below the button without leaving
+        the page. This provides an interactive user experience where the form
+        and the result are shown together on the same page.
       </p>
     </section>
   </main>
@@ -180,8 +180,44 @@
   </footer>
 
   <script type="text/javascript">
+    // Last modified footer script
     var x = document.lastModified;
     document.getElementById('lastModified').textContent = x;
+
+    // Mad Lib JS logic
+    const form = document.getElementById('madLibForm');
+    const errorMessage = document.getElementById('errorMessage');
+    const storyResult = document.getElementById('storyResult');
+    const storyText = document.getElementById('storyText');
+
+    form.addEventListener('submit', function (event) {
+      event.preventDefault(); // 🚫 Stop actual POST (avoids 405 and page change)
+
+      const name = document.getElementById('name').value.trim();
+      const adjective = document.getElementById('adjective').value.trim();
+      const noun = document.getElementById('noun').value.trim();
+      const place = document.getElementById('place').value.trim();
+      const animal = document.getElementById('animal').value.trim();
+      const verb = document.getElementById('verb').value.trim();
+
+      if (!name || !adjective || !noun || !place || !animal || !verb) {
+        errorMessage.textContent = 'Please fill out ALL fields before submitting your Mad Lib.';
+        errorMessage.style.display = 'block';
+        storyResult.style.display = 'none';
+        return;
+      }
+
+      errorMessage.style.display = 'none';
+
+      const story = `
+        One ${adjective} morning, ${name} grabbed a ${noun} and rushed to ${place}.
+        On the way, ${name} saw a group of ${animal} trying to ${verb} in the middle of the road!
+        Everyone stopped and laughed because it was the most ${adjective} thing they had ever seen.
+      `;
+
+      storyText.textContent = story.trim();
+      storyResult.style.display = 'block';
+    });
   </script>
 </body>
 </html>
