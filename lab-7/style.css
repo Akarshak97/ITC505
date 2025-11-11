@@ -1,0 +1,45 @@
+body {
+  font-family: Arial, sans-serif;
+  background: #fdf6e3;
+  text-align: center;
+  margin-top: 40px;
+}
+form {
+  display: inline-block;
+  background: #fff8dc;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 0 10px #ccc;
+}
+label {
+  display: block;
+  margin: 10px;
+}
+button {
+  margin-top: 15px;
+  padding: 8px 16px;
+  border: none;
+  background: #4caf50;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+}
+button:hover {
+  background: #45a049;
+}
+footer {
+  margin-top: 30px;
+  color: gray;
+  text-align: left;
+  width: 60%;
+  margin: 30px auto 0 auto;
+  font-size: 0.9em;
+}
+#addendum {
+  margin-top: 15px;
+  border-top: 1px solid #ccc;
+  padding-top: 10px;
+}
+#addendum h4 {
+  margin-bottom: 5px;
+}
