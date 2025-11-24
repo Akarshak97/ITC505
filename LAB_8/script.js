@@ -1,47 +1,49 @@
+// Basic sanitization to help prevent XSS in client-side
 function sanitize(input) {
-    // Remove characters often used in XSS payloads
     return input.replace(/[<>"'()]/g, "");
 }
 
 function validateForm() {
+    // Get fields
     let fnameField = document.getElementById("fname");
     let lnameField = document.getElementById("lname");
     let emailField = document.getElementById("email");
     let passField = document.getElementById("password");
     let confirmField = document.getElementById("confirm");
 
+    // Trim + sanitize values
     let fname = sanitize(fnameField.value.trim());
     let lname = sanitize(lnameField.value.trim());
     let email = sanitize(emailField.value.trim());
-    let pass = passField.value;
+    let password = passField.value;
     let confirm = confirmField.value;
 
-    // Put sanitized values back (optional but nice)
+    // Put sanitized values back into inputs (optional but good)
     fnameField.value = fname;
     lnameField.value = lname;
     emailField.value = email;
 
-    // 1. Empty fields check
+    // ========= 1. Empty field validation =========
     if (fname === "") {
-        alert("Please enter your first name.");
+        alert("First name is required.");
         fnameField.focus();
         return false;
     }
 
     if (lname === "") {
-        alert("Please enter your last name.");
+        alert("Last name is required.");
         lnameField.focus();
         return false;
     }
 
     if (email === "") {
-        alert("Please enter your email address.");
+        alert("Email address is required.");
         emailField.focus();
         return false;
     }
 
-    if (pass === "") {
-        alert("Please enter a password.");
+    if (password === "") {
+        alert("Password is required.");
         passField.focus();
         return false;
     }
@@ -52,25 +54,63 @@ function validateForm() {
         return false;
     }
 
-    // 2. Email format check
-    let pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!pattern.test(email)) {
-        alert("Invalid email format. Example: user@example.com");
+    // ========= 2. Name validations =========
+    // Only alphabetic characters, at least 2 letters
+    let namePattern = /^[A-Za-z]{2,}$/;
+
+    if (!namePattern.test(fname)) {
+        alert("First name should contain only letters and be at least 2 characters long.");
+        fnameField.focus();
+        return false;
+    }
+
+    if (!namePattern.test(lname)) {
+        alert("Last name should contain only letters and be at least 2 characters long.");
+        lnameField.focus();
+        return false;
+    }
+
+    // ========= 3. Email format validation =========
+    let emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailPattern.test(email)) {
+        alert("Please enter a valid email (e.g., user@example.com).");
         emailField.focus();
         return false;
     }
 
-    // 3. Password match check
-    if (pass !== confirm) {
+    // ========= 4. Password strength validation =========
+    // At least 8 chars, one upper, one lower, one digit, one special char
+    let passwordLengthOK = password.length >= 8;
+    let hasUpper = /[A-Z]/.test(password);
+    let hasLower = /[a-z]/.test(password);
+    let hasDigit = /[0-9]/.test(password);
+    let hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+
+    if (!passwordLengthOK) {
+        alert("Password must be at least 8 characters long.");
+        passField.focus();
+        return false;
+    }
+
+    if (!hasUpper || !hasLower || !hasDigit || !hasSpecial) {
+        alert("Password must include uppercase, lowercase, a number, and a special character.");
+        passField.focus();
+        return false;
+    }
+
+    // ========= 5. Password match validation =========
+    if (password !== confirm) {
         alert("Passwords do not match. Please re-enter.");
         confirmField.focus();
         return false;
     }
 
-    // ✅ If everything is valid
-    alert("Form submitted successfully!");  // success popup
+    // ========= 6. Final success message =========
+    alert("Form submitted successfully!");
 
-    // Return true if you actually want to submit to the server
-    // Return false if you just want the popup and stay on the page
-    return true;
+    // If you have no backend and just want the popup, use:
+    // return false;
+
+    return true; // allow actual submission
 }
